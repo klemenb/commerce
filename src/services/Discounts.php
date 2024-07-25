@@ -311,6 +311,13 @@ class Discounts extends Component
                 ['>=', 'dateTo', Db::prepareDateForDb($date)],
             ]);
 
+        // If the order doesn't have a coupon code, load only discounts that don't have a coupon code set
+        if ($order && !$order->couponCode) {
+            $discountQuery = $discountQuery->andWhere([
+                'code' => null,
+            ]);
+        }
+
         // If the order has a coupon code let's only get discounts for that code, or discounts that do not require a code
         if ($order && $order->couponCode) {
             if (Craft::$app->getDb()->getIsPgsql()) {
