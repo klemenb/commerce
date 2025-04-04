@@ -83,7 +83,13 @@ class Coupons extends Component
     public function getCouponsByDiscountId(int $discountId): array
     {
         $coupons = $this->_createCouponQuery()
-            ->where(['discountId' => $discountId])
+            ->where(['discountId' => $discountId]);
+
+        // Limit the number of returned coupons to prevent freezing the admin
+        // panel if there are too many coupons under for the specified discount
+        $coupons = $coupons
+            ->limit(20)
+            ->orderBy(['id' => SORT_DESC])
             ->all();
 
         foreach ($coupons as &$coupon) {

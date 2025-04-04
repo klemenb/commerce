@@ -269,7 +269,7 @@
                     </div>
                 {% endset %}
                 {{ forms.field({
-                    label: 'Coupons'|t('commerce'),
+                    label: 'Coupons (showing only last 20 coupons)'|t('commerce'),
                     errors: discount.getErrors('coupons'),
                     headingSuffix: forms.button({
                         id: 'commerce-coupons-generate',
