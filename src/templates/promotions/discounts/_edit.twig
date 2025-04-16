@@ -254,6 +254,16 @@
 
         <div id="commerce-coupons-container">
             <div id="commerce-coupons">
+            {% if discount.coupons | length >= 20 %}
+                <div class="field">
+                    <div class="heading">
+                        <label>Too many discount codes to edit via admin panel.</label>
+                    </div>
+                    <div class="instructions">
+                        Please edit coupon codes directly in the database or reach out to web team on Slack.
+                    </div>
+                </div>
+            {% else %}
                 {% set tableField %}
                     <div>
                         {{ forms.editableTable({
@@ -269,7 +279,7 @@
                     </div>
                 {% endset %}
                 {{ forms.field({
-                    label: 'Coupons (showing only last 20 coupons)'|t('commerce'),
+                    label: 'Coupons (showing up to 20 coupons)'|t('commerce'),
                     errors: discount.getErrors('coupons'),
                     headingSuffix: forms.button({
                         id: 'commerce-coupons-generate',
@@ -284,6 +294,7 @@
                     name: 'couponFormat',
                     value: discount.couponFormat,
                 }) }}
+            {% endif %}
             </div>
         </div>
     </div>

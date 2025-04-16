@@ -302,8 +302,13 @@ class DiscountsController extends BaseCpController
             $discount->setCategoryIds($relatedElements);
         }
 
-        $coupons = $this->request->getBodyParam('coupons') ?: [];
-        $this->_setCouponsOnDiscount(coupons: $coupons, discount: $discount);
+        // Only allow changes to discount codes to be applied to discounts with less than 20 coupon codes
+        if ($discount->id === null ||
+            count(Plugin::getInstance()->getDiscounts()->getDiscountById($discount->id)->getCoupons()) < 20) {
+
+            $coupons = $this->request->getBodyParam('coupons') ?: [];
+            $this->_setCouponsOnDiscount(coupons: $coupons, discount: $discount);
+        }
 
         // Save it
         if (Plugin::getInstance()->getDiscounts()->saveDiscount($discount)) {
