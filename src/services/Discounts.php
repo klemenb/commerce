@@ -482,8 +482,7 @@ class Discounts extends Component
 
         return ArrayHelper::firstWhere($this->_populateDiscounts($discounts), function(Discount $discount) use ($code) {
             return (
-                $discount->enabled &&
-                ArrayHelper::contains($discount->getCoupons(), fn(Coupon $coupon) => strcasecmp($coupon->code, $code) === 0)
+                $discount->enabled
             );
         });
     }
@@ -1127,13 +1126,13 @@ SQL;
             return true;
         }
 
-        $coupons = $discount->getCoupons();
-        // Protect against empty coupon code list if the discount requires a coupon code
-        if (empty($coupons)) {
+        $coupon = CouponRecord::findOne(['code' => $order->couponCode, 'discountId' => $discount->id]);
+
+        if (!$coupon) {
             return false;
         }
 
-        $return = ArrayHelper::firstWhere($coupons, static fn(Coupon $coupon) => (strcasecmp($coupon->code, $order->couponCode) == 0) && ($coupon->maxUses === null || $coupon->maxUses > $coupon->uses));
+        $return = ($coupon->maxUses === null || $coupon->maxUses > $coupon->uses);
         return (bool)$return;
     }
 
